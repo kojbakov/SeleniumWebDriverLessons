@@ -4,6 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from conftest import driver
 import pytest
 
+
 @pytest.mark.skip('skip example test')
 def test_example(driver):
     driver.get("https://www.google.com/")
