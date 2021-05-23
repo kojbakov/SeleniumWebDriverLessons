@@ -18,9 +18,8 @@ def safari_driver():
 
 
 @pytest.fixture(scope="session")
-def firefox_driver(request):
+def firefox_driver():
     driver = webdriver.Firefox()
-    print(request.binary)
     yield driver
     driver.quit()
 
