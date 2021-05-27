@@ -12,5 +12,5 @@ def test_duck_sticker(chrome_driver):
     all_ducks = chrome_driver.find_elements_by_class_name("image-wrapper")
     # Итерация по товарам с проверкой, что у каждого товара ровно один стикер
     for duck in all_ducks:
-        assert len(duck.find_elements_by_class_name("sticker")) != 1, "Duck stickers != 1!"
+        assert len(duck.find_elements_by_class_name("sticker")) == 1, "Duck stickers != 1!"
 
