@@ -4,7 +4,7 @@ import selenium.common.exceptions as sel_exc
 from SysFunctions.sys_func import get_all_href_from_ul
 
 
-def test_login(chrome_driver):
+def test_admin_panel_on_h1_exist(chrome_driver):
     """ 1) входит в панель администратора http://localhost/litecart/admin
         2) прокликивает последовательно все пункты меню слева, включая вложенные пункты
         3) для каждой страницы проверяет наличие заголовка (то есть элемента с тегом h1)"""
@@ -31,4 +31,4 @@ def test_login(chrome_driver):
                 test_page.go_to_site(sub_elem)
                 assert test_page.find_element((By.TAG_NAME, 'h1')).is_displayed()
         except sel_exc.NoSuchElementException as e:
-            print(f"Element has no sub_links")
+            print("Element has no sub_links")
