@@ -46,7 +46,8 @@ def firefox_nightly_driver():
     webdriver.Chrome,
     webdriver.Safari,
     webdriver.Firefox,
-])
+],
+    ids=['Chrome', 'Safari', 'Firefox'])
 def all_drivers(request):
     driver = request.param()
     yield driver

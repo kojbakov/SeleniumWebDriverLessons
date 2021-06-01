@@ -11,5 +11,3 @@ def is_list_in_alphabet_order(l: list):
     copy_l = l.copy()
     copy_l.sort()
     return l == copy_l
-
-
