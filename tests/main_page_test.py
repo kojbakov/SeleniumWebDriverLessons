@@ -1,7 +1,12 @@
 from Pages.BaseApp import BasePage
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from Pages.LiteCartPage import LiteCart, LiteCartLocators
+from Pages.LiteCartRegistrationPage import LiteCartRegistration, LiteCartRegistrationLocators
 import pytest_check as check
+import time
+from datetime import datetime
+
 
 
 def test_duck_sticker(chrome_driver):
@@ -37,3 +42,38 @@ def test_duck_compare(all_drivers):
     check.equal(first_duck_title, duck_block_title, "Title is not equal!")
     for key in duck_data_main_page.keys():
         check.equal(duck_data_main_page[key], duck_data_page[key], f"{key} param in not equal")
+
+
+def test_registration(chrome_driver):
+    """
+    Сделайте сценарий для регистрации нового пользователя в учебном приложении litecart    """
+
+    test_page = LiteCartRegistration(chrome_driver, "http://localhost/litecart/en/create_account")
+    test_page.go_to_site()
+    test_page.get_tax_id().send_keys("test tax_id 1")
+    test_page.get_company().send_keys("test company")
+    test_page.get_first_name().send_keys("test first name")
+    test_page.get_last_name().send_keys("test last name")
+    test_page.get_address_1().send_keys("test address 1")
+    test_page.get_address_2().send_keys("test address 2")
+    test_page.get_postcode().send_keys("10001")
+    test_page.get_city().send_keys("New York")
+    test_page.click_dropdown_countries_list()
+    test_page.get_country().send_keys("United States", Keys.ENTER)
+    # Иногда падает тут, не находит элемент
+    test_page.choose_state("New York")
+    # генерация адреса почты
+    test_mail = datetime.now().strftime("%H%M%S") + "@testmail.ru"
+    test_page.get_email().send_keys(test_mail)
+    test_page.get_phone().send_keys("+79781233212")
+    test_page.get_password().send_keys("1")
+    test_page.get_confirm_password().send_keys("1")
+    test_page.click_create_account_button()
+    # Нормальные ожидания не сработали(
+    time.sleep(1)
+    test_page.logout()
+    # WebDriverWait(chrome_driver, 10).until(
+    #     EC.presence_of_element_located(LiteCartRegistrationLocators.LOGIN_BUTTON_LOCATOR))
+    time.sleep(1)
+    test_page.login(test_mail, "1")
+    test_page.logout()

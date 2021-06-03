@@ -5,6 +5,12 @@ from selenium.webdriver.common.by import By
 class LiteCartLocators:
     REGULAR_PRICE_LOCATOR = (By.CLASS_NAME, 'regular-price')
     CAMPAIGNS_PRICE_LOCATOR = (By.CLASS_NAME, 'campaign-price')
+    # inputs
+    USERNAME_INPUT_LOCATOR = (By.NAME, "email")
+    PASSWORD_INPUT_LOCATOR = (By.NAME, "password")
+    # buttons
+    LOGIN_BUTTON_LOCATOR = (By.NAME, "login")
+    LOGOUT_BUTTON_LOCATOR = (By.XPATH, "//*[@id='box-account']/div/ul/li/a[text()='Logout']")
 
 
 class LiteCart(BasePage):
@@ -24,3 +30,11 @@ class LiteCart(BasePage):
                 "css_class_camp_price_main_page": camp_price_elem.get_attribute("class")
         }
         return duck_data
+
+    def login(self, user_email, user_pwd):
+        self.driver.find_element(LiteCartLocators.USERNAME_INPUT_LOCATOR).send_keys(user_email)
+        self.driver.find_element(LiteCartLocators.PASSWORD_INPUT_LOCATOR).send_keys(user_pwd)
+        return self.find_element(LiteCartLocators.LOGIN_BUTTON_LOCATOR, time=5).click()
+
+    def logout(self):
+        return self.find_element(LiteCartLocators.LOGOUT_BUTTON_LOCATOR, time=5).click()

@@ -1,12 +1,13 @@
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
 
 
 class BasePage:
 
-    def __init__(self, driver):
+    def __init__(self, driver, url="http://localhost/litecart/en/"):
         self.driver = driver
-        self.base_url = "http://localhost/litecart"
+        self.base_url = url
 
     def find_element(self, locator, time=10):
         return WebDriverWait(self.driver, time).until(EC.presence_of_element_located(locator),
