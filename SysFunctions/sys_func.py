@@ -1,3 +1,5 @@
+import re
+
 def get_all_href_from_ul(ul):
     item_links = []
     for elem in ul:
@@ -11,3 +13,7 @@ def is_list_in_alphabet_order(l: list):
     copy_l = l.copy()
     copy_l.sort()
     return l == copy_l
+
+
+def get_rgb(raw_rgb: str):
+    return re.findall(r'rgb\w?\((\d+),\s*(\d+),\s*(\d+)', raw_rgb)[0]

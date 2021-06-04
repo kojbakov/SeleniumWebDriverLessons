@@ -6,7 +6,9 @@ from Pages.LiteCartRegistrationPage import LiteCartRegistration, LiteCartRegistr
 import pytest_check as check
 import time
 from datetime import datetime
+import re
 
+from selenium.webdriver.support.color import Color
 
 
 def test_duck_sticker(chrome_driver):
@@ -38,10 +40,26 @@ def test_duck_compare(all_drivers):
     duck_block = test_page.find_element((By.ID, "box-product"))
     duck_block_title = duck_block.find_element_by_class_name('title').text
     duck_data_page = (test_page.get_duck_data())
-    # Сравнение
+    # Сравнение заголовков
     check.equal(first_duck_title, duck_block_title, "Title is not equal!")
     for key in duck_data_main_page.keys():
-        check.equal(duck_data_main_page[key], duck_data_page[key], f"{key} param in not equal")
+        if key not in [
+            "font_size_reg_price",
+            "font_size_camp_price",
+            "regular_price_main_page_color",
+            "campaigns_price_main_page_color"
+        ]:
+            check.equal(duck_data_main_page[key], duck_data_page[key], f"{key} param in not equal")
+
+    test_pages = [duck_data_main_page, duck_data_page]
+    for page in test_pages:
+        # Проверка серого цвета обычной цены(r = g = b)
+        check.equal(len(set(page["regular_price_main_page_color"])), 1)
+        # Проверка красного цвета акционной цены (g и b = 0)
+        check.equal(int(page["campaigns_price_main_page_color"][1]), 0)
+        check.equal(int(page["campaigns_price_main_page_color"][2]), 0)
+        # проверка, что акционная цена крупнее, чем обычная
+        check.less(page["font_size_reg_price"], page["font_size_camp_price"])
 
 
 def test_registration(chrome_driver):
