@@ -2,6 +2,7 @@ from .BaseApp import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
 
 
 class LiteCartRegistrationLocators:
@@ -15,7 +16,7 @@ class LiteCartRegistrationLocators:
     ADDRESS_2_LOCATOR= (By.NAME, "address2")
     POSTCODE_LOCATOR = (By.NAME, "postcode")
     CITY_LOCATOR = (By.NAME, "city")
-    STATE_LOCATOR = (By.XPATH, '//*select[@name="zone_code"]')
+    STATE_LOCATOR = (By.XPATH, '*//select[@name="zone_code"]')
     EMAIL_LOCATOR = (By.NAME, "email")
     PHONE_LOCATOR = (By.NAME, "phone")
     PASSWORD_LOCATOR = (By.NAME, "password")

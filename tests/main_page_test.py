@@ -6,9 +6,6 @@ from Pages.LiteCartRegistrationPage import LiteCartRegistration, LiteCartRegistr
 import pytest_check as check
 import time
 from datetime import datetime
-import re
-
-from selenium.webdriver.support.color import Color
 
 
 def test_duck_sticker(chrome_driver):
@@ -78,7 +75,7 @@ def test_registration(chrome_driver):
     test_page.get_city().send_keys("New York")
     test_page.click_dropdown_countries_list()
     test_page.get_country().send_keys("United States", Keys.ENTER)
-    # Иногда падает тут, не находит элемент
+    time.sleep(1)
     test_page.choose_state("New York")
     # генерация адреса почты
     test_mail = datetime.now().strftime("%H%M%S") + "@testmail.ru"
