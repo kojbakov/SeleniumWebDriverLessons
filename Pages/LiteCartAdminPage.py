@@ -37,3 +37,4 @@ class LiteCartAdmin(BasePage):
             return self.find_element(LiteCartAdminLocators.LOCATOR_USER_AUTH, time=5).is_displayed()
         except selenium.common.exceptions.TimeoutException as e:
             return False
+

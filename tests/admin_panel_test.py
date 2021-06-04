@@ -3,7 +3,13 @@ from selenium.webdriver.common.by import By
 import selenium.common.exceptions as sel_exc
 from SysFunctions.sys_func import get_all_href_from_ul
 from SysFunctions.sys_func import is_list_in_alphabet_order
+from selenium.webdriver.common.keys import Keys
 import pytest
+import time
+import os
+from datetime import datetime, timedelta
+from selenium.webdriver.support.ui import Select
+
 
 
 @pytest.mark.skip('skip example test')
@@ -86,3 +92,49 @@ def test_countries_and_geo_zones_alphabet_order(chrome_driver, test_url, geo_val
         print(all_geo_zones_names)
         # Проверка того, что названия гео-зон расположены в алфовитном порядке
         assert is_list_in_alphabet_order(all_geo_zones_names)
+
+
+def test_add_some_duck(chrome_driver):
+    """Сделайте сценарий для добавления нового товара (продукта) в учебном приложении litecart (в админке).
+    """
+    # Логин
+    chrome_driver.implicitly_wait(10)
+    test_page = LiteCartAdmin(chrome_driver)
+    test_page.go_to_site("http://localhost/litecart/admin/")
+    test_page.login("admin", "admin")
+    # Проверка, что логин успешен
+    assert test_page.is_user_auth()
+    item_panel = chrome_driver.find_element_by_id("box-apps-menu")
+    catalog_span = item_panel.find_element_by_xpath(".//span[@class='name' and text()='Catalog']")
+    catalog_link = catalog_span.find_element_by_xpath("./..").get_attribute('href')
+    chrome_driver.get(catalog_link)
+    catalog_edit = chrome_driver.find_element_by_css_selector("a[href*='edit_product']").get_attribute('href')
+    chrome_driver.get(catalog_edit)
+    chrome_driver.find_element_by_name("name[en]").send_keys("New test product " + datetime.now().strftime("%H%M%S"))
+    chrome_driver.find_element_by_name("code").send_keys("Test code")
+    for gender in chrome_driver.find_elements_by_name("product_groups[]"):
+        gender.click()
+    chrome_driver.find_element_by_name("quantity").send_keys("1000")
+    upload_img = chrome_driver.find_element_by_name("new_images[]")
+    upload_img.send_keys(os.getcwd()+"/duck.png")
+    chrome_driver.find_element_by_name("date_valid_from").send_keys(datetime.now().strftime("%d.%m.%Y"))
+    tomorrow_date = (datetime.now() + timedelta(1)).strftime("%d.%m.%Y")
+    chrome_driver.find_element_by_name("date_valid_to").send_keys(tomorrow_date)
+    chrome_driver.find_element_by_link_text("Information").click()
+    select_manufacturer = Select(chrome_driver.find_element_by_name("manufacturer_id"))
+    select_manufacturer.select_by_value("1")
+    chrome_driver.find_element_by_name("keywords").send_keys("test")
+    chrome_driver.find_element_by_name("short_description[en]").send_keys("Short description test")
+    chrome_driver.find_element_by_css_selector("div.trumbowyg-editor").send_keys("Description test")
+    chrome_driver.find_element_by_name("head_title[en]").send_keys("Head title test")
+    chrome_driver.find_element_by_name("meta_description[en]").send_keys("Meta description test")
+    chrome_driver.find_element_by_link_text("Data").click()
+    chrome_driver.find_element_by_name("sku").send_keys("Sku test " + datetime.now().strftime("%H%M%S"))
+    chrome_driver.find_element_by_name("gtin").send_keys("Gtin test " + datetime.now().strftime("%H%M%S"))
+    chrome_driver.find_element_by_name("taric").send_keys("Taric test " + datetime.now().strftime("%H%M%S"))
+    chrome_driver.find_element_by_name("weight").send_keys("5")
+    chrome_driver.find_element_by_name("dim_x").send_keys("1")
+    chrome_driver.find_element_by_name("dim_y").send_keys("2")
+    chrome_driver.find_element_by_name("dim_z").send_keys("3")
+    chrome_driver.find_element_by_name("attributes[en]").send_keys("test attr")
+    chrome_driver.find_element_by_name("save").click()

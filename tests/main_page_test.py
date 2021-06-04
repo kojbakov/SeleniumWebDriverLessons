@@ -92,3 +92,4 @@ def test_registration(chrome_driver):
     time.sleep(1)
     test_page.login(test_mail, "1")
     test_page.logout()
+
