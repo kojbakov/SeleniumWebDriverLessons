@@ -44,3 +44,8 @@ class LiteCart(BasePage):
 
     def logout(self):
         return self.find_element(LiteCartLocators.LOGOUT_BUTTON_LOCATOR, time=5).click()
+
+    def get_first_duck(self):
+        most_popular_block = self.driver.find_element_by_id("box-most-popular")
+        first_duck = most_popular_block.find_elements_by_class_name('link')[0]
+        return first_duck
