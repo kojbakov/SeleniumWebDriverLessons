@@ -115,26 +115,17 @@ def test_buy_some_duck(chrome_driver):
     remove_buttons = chrome_driver.find_elements_by_name("remove_cart_item")
     find_not_empty_rows_xpath = "*//div[@id='order_confirmation-wrapper']/table/tbody/tr"
     empty_cart_xpath = "*//div[@id='checkout-cart-wrapper']/p/em[text()='There are no items in your cart.']"
-    for rm_btn in remove_buttons:
+    for i in range(len(remove_buttons)):
         order_table_rows = chrome_driver.find_elements_by_xpath(find_not_empty_rows_xpath)
-        # rm_btn = wait(chrome_driver, 10).until(
-        #     lambda d: d.find_element_by_name("remove_cart_item")
-        # )
-        # rm_btn.click()
-        # wait(chrome_driver, 10).until(
-        #     EC.visibility_of_element_located((By.NAME, "remove_cart_item"))
-        # )
-        for btn in chrome_driver.find_elements_by_name("remove_cart_item"):
-            try:
-                rm_is_displayed = wait(chrome_driver, 5).until(
-                    lambda chrome_driver: btn.is_displayed()
-                )
-                if rm_is_displayed:
-                    btn.click()
-            except StaleElementReferenceException:
-                pass
+        # если утка не последняя - жждем появление иконки для остановки карусели и кликаем
+        if i != len(remove_buttons) - 1:
+            time.sleep(1)
+            #wait(chrome_driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "shortcuts")))
+            chrome_driver.find_element_by_class_name("shortcuts").click()
+        wait(chrome_driver, 5).until(
+            EC.element_to_be_clickable((By.NAME, "remove_cart_item"))).click()
         time.sleep(1)
-        if rm_btn == remove_buttons[-1] and len(chrome_driver.find_elements_by_xpath(empty_cart_xpath)) == 1:
+        if i == len(remove_buttons)-1 and len(chrome_driver.find_elements_by_xpath(empty_cart_xpath)) == 1:
             pass
         else:
             wait(chrome_driver, 10).until(
