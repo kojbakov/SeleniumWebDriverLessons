@@ -9,6 +9,8 @@ import time
 import os
 from datetime import datetime, timedelta
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait as wait
 
 
 
@@ -138,3 +140,25 @@ def test_add_some_duck(chrome_driver):
     chrome_driver.find_element_by_name("dim_z").send_keys("3")
     chrome_driver.find_element_by_name("attributes[en]").send_keys("test attr")
     chrome_driver.find_element_by_name("save").click()
+
+
+def test_link_in_new_tab(chrome_driver):
+    test_page = LiteCartAdmin(chrome_driver)
+    test_page.go_to_site("http://localhost/litecart/admin/")
+    test_page.login("admin", "admin")
+    test_page.go_to_site("http://localhost/litecart/admin/?app=countries&doc=countries")
+    chrome_driver.find_element_by_class_name("button").click()
+    external_links = chrome_driver.find_elements_by_class_name("fa-external-link")
+    for link in external_links:
+        main_window = chrome_driver.current_window_handle
+        old_windows = chrome_driver.window_handles
+        link.click()
+        new_window = wait(chrome_driver, 10).until(
+            lambda chrome_driver: chrome_driver.window_handles != old_windows
+        )
+        if new_window:
+            old_windows = chrome_driver.window_handles
+            chrome_driver.switch_to_window(old_windows[-1])
+            assert main_window != chrome_driver.current_window_handle
+            chrome_driver.close()
+            chrome_driver.switch_to_window(main_window)
