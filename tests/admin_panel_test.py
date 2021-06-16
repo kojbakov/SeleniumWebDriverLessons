@@ -162,3 +162,27 @@ def test_link_in_new_tab(chrome_driver):
             assert main_window != chrome_driver.current_window_handle
             chrome_driver.close()
             chrome_driver.switch_to_window(main_window)
+
+
+def test_for_errors_in_logs(chrome_driver):
+    """Сценарий проверяет, не появляются ли в логе браузера сообщения при открытии страниц в
+     учебном приложении, а именно -- страниц товаров в каталоге в административной панели"""
+    test_page = LiteCartAdmin(chrome_driver)
+    test_page.go_to_site("http://localhost/litecart/admin/")
+    test_page.login("admin", "admin")
+    test_page.go_to_site("http://localhost/litecart/admin/?app=catalog&doc=catalog&category_id=1")
+    all_rows = chrome_driver.find_elements_by_css_selector("table.dataTable tr.row")
+    all_duck_links = []
+    for row in all_rows:
+        link_row = row.find_element_by_css_selector('a').get_attribute('href')
+        # почему-то не сработал поиск через a[href*='edit_product']"
+        if "edit_product" in link_row:
+            all_duck_links.append(link_row)
+    for link in all_duck_links:
+        chrome_driver.get(link)
+        wait(chrome_driver, 10).until(EC.presence_of_element_located((By.ID, "content")))
+        browser_logs = chrome_driver.get_log("browser")
+        if len(browser_logs) > 0:
+            for l in browser_logs:
+                assert l['level'] not in ['WARNING', 'SEVERE'], l['message']
+
