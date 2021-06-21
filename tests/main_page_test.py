@@ -1,13 +1,14 @@
 from Pages.BaseApp import BasePage
 from selenium.webdriver.common.keys import Keys
-from Pages.LiteCartPage import LiteCart, LiteCartLocators
-from Pages.LiteCartRegistrationPage import LiteCartRegistration, LiteCartRegistrationLocators
+from Pages.LiteCartPage import LiteCart
+from Pages.LiteCartRegistrationPage import LiteCartRegistration
+from Pages.CartPage import Cart
 import pytest_check as check
 import time
 from datetime import datetime
 from selenium.webdriver.support.wait import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, TimeoutException, StaleElementReferenceException
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
@@ -138,5 +139,6 @@ def test_buy_and_remove_ducks(chrome_driver):
     test_page.go_to_site()
     test_page.buy_ducks(3)
     test_page.open_cart()
+    test_page = Cart(chrome_driver)
     test_page.remove_ducks_from_cart()
 

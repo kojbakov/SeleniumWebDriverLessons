@@ -1,11 +1,8 @@
 from .BaseApp import BasePage
 from selenium.webdriver.common.by import By
 from SysFunctions.sys_func import get_rgb
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait as wait
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support import expected_conditions as EC
-import time
+from .DuckPage import Duck
+
 
 
 class LiteCartLocators:
@@ -62,33 +59,6 @@ class LiteCart(BasePage):
     def buy_ducks(self, quantity_ducks: int):
         for i in range(1, quantity_ducks + 1):
             self.get_first_duck().click()
-            try:
-                select_size = Select(self.driver.find_element_by_name("options[Size]"))
-                select_size.select_by_value("Large")
-            except NoSuchElementException:
-                pass
-            self.driver.find_element_by_name("add_cart_product").click()
-            wait(self.driver, 10).until(EC.text_to_be_present_in_element((By.CLASS_NAME, "quantity"), str(i)))
+            new_duck = Duck(self.driver)
+            new_duck.add_duck_to_cart(i)
             self.go_to_site()
-
-    def remove_ducks_from_cart(self):
-        remove_buttons = self.driver.find_elements_by_name("remove_cart_item")
-        find_not_empty_rows_xpath = "*//div[@id='order_confirmation-wrapper']/table/tbody/tr"
-        empty_cart_xpath = "*//div[@id='checkout-cart-wrapper']/p/em[text()='There are no items in your cart.']"
-        for i in range(len(remove_buttons)):
-            order_table_rows = self.driver.find_elements_by_xpath(find_not_empty_rows_xpath)
-            # если утка не последняя - жждем появление иконки для остановки карусели и кликаем
-            if i != len(remove_buttons) - 1:
-                time.sleep(1)
-                # wait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "shortcuts")))
-                self.driver.find_element_by_class_name("shortcuts").click()
-            wait(self.driver, 5).until(
-                EC.element_to_be_clickable((By.NAME, "remove_cart_item"))).click()
-            time.sleep(1)
-            if i == len(remove_buttons) - 1 and len(self.driver.find_elements_by_xpath(empty_cart_xpath)) == 1:
-                pass
-            else:
-                wait(self.driver, 10).until(
-                    lambda driver: len(self.driver.find_elements(By.XPATH, find_not_empty_rows_xpath)) ==
-                    len(order_table_rows) - 1
-                )
