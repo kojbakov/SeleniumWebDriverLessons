@@ -1,5 +1,4 @@
 from Pages.BaseApp import BasePage
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from Pages.LiteCartPage import LiteCart, LiteCartLocators
 from Pages.LiteCartRegistrationPage import LiteCartRegistration, LiteCartRegistrationLocators
@@ -132,4 +131,12 @@ def test_buy_some_duck(chrome_driver):
                 lambda chrome_driver: len(chrome_driver.find_elements(By.XPATH, find_not_empty_rows_xpath)) ==
                 len(order_table_rows) - 1
                 )
+
+
+def test_buy_and_remove_ducks(chrome_driver):
+    test_page = LiteCart(chrome_driver)
+    test_page.go_to_site()
+    test_page.buy_ducks(3)
+    test_page.open_cart()
+    test_page.remove_ducks_from_cart()
 
